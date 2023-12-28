@@ -110,14 +110,14 @@ class App(Plugin):
             '- 多人复述的聊天内容'
             '- 多人回复 6/666/牛/牛逼 之前的内容'
         )
-        prompt = f'当前北京时间为: {tim}\n{prompt}'
+        prompt = f'当前时间为: {tim}\n{prompt}'
         session = [{"role": "system", "content": prompt}]
 
         if lst and lst[0].get('uid') == 'bot':
             txt = lst.popleft().get('content', '')
             session.append({"role": "user", "content": txt})
 
-        his = ['发言人,北京时间,内容']
+        his = ['发言人,时间,内容']
         for msg in lst:
             row = ','.join([
                 msg.get('sender', ''),
