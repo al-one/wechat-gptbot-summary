@@ -47,7 +47,7 @@ class App(Plugin):
     def append_message(self, sender, msg):
         maxlen = self.config.get('maxlen', {})
         if isinstance(maxlen, dict):
-            maxlen = maxlen.get(sender, 500)
+            maxlen = maxlen.get(sender, maxlen.get('*', 500))
         if maxlen <= 0:
             return
         if sender not in self.groups:
@@ -94,18 +94,14 @@ class App(Plugin):
         count = len(lst)
         minlen = self.config.get('minlen', {})
         if isinstance(minlen, dict):
-            minlen = minlen.get(sender, 3)
+            minlen = minlen.get(sender, minlen.get('*', 3))
         if count < minlen:
             return Reply(ReplyType.TEXT, '待总结的消息消息过少')
-
-        lst = self.groups.pop(sender, None) or []
-        count = len(lst)
-        logger.info('Summarize %s messages for %s.', count, sender)
 
         tim = f'{datetime.now()}'
         prompt = self.config.get('prompt') or (
             '这是一份聊天记录，请总结成一份不超过500字的中文概述。'
-            '总结正文里需要体现出这份聊天记录是从什么时间(忽略年份和秒)开始的，'
+            '总结正文里需要体现出这份聊天记录是从几点几分开始的，'
             '遇到以下特征时可能是重点内容：'
             '- 多人复述的聊天内容'
             '- 多人回复 6/666/牛/牛逼 之前的内容'
@@ -113,9 +109,13 @@ class App(Plugin):
         prompt = f'当前时间为: {tim}\n{prompt}'
         session = [{"role": "system", "content": prompt}]
 
+        lst = self.groups.pop(sender, None) or []
+        count = len(lst)
+        logger.info('Summarize %s messages for %s.', count, sender)
+
         if lst and lst[0].get('uid') == 'bot':
-            txt = lst.popleft().get('content', '')
-            session.append({"role": "user", "content": txt})
+            pre = lst.pop(0) if isinstance(lst, list) else lst.popleft()
+            session.append({"role": "user", "content": pre.get('content', '')})
 
         his = ['发言人,时间,内容']
         for msg in lst:

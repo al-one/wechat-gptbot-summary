@@ -29,7 +29,8 @@
       "minlen": 5, # 最小聊天记录条数 int或dict，默认为3
       "maxlen": {  # 最大聊天记录条数 int或dict，默认为500
         "wx_userid": 100,     # 私聊
-        "xxxx@chatroom": 200  # 群聊
+        "xxxx@chatroom": 200, # 群聊
+        "*": 300
       }
     }
   ]
