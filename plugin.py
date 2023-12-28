@@ -115,7 +115,7 @@ class App(Plugin):
 
         if lst and lst[0].get('uid') == 'bot':
             pre = lst.pop(0) if isinstance(lst, list) else lst.popleft()
-            session.append({"role": "user", "content": pre.get('content', '')})
+            session.append({"role": "assistant", "content": pre.get('content', '')})
 
         his = ['发言人,时间,内容']
         for msg in lst:
