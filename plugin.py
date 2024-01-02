@@ -138,7 +138,7 @@ class App(Plugin):
             logger.info('Summarized %s messages: %s.', count, result)
         if exc := result.get('exception'):
             if isinstance(exc, openai.error.APIError):
-                msg = exc.message or f'{exc}'
+                msg = exc.user_message or f'{exc}'
         reply = Reply(ReplyType.TEXT, msg or '总结失败')
         return reply
 
