@@ -47,7 +47,7 @@ class App(Plugin):
     def append_message(self, sender, msg):
         maxlen = self.config.get('maxlen', {})
         if isinstance(maxlen, dict):
-            maxlen = maxlen.get(sender, maxlen.get('*', 500))
+            maxlen = maxlen.get(sender, maxlen.get('*', 200))
         if maxlen <= 0:
             return
         if sender not in self.groups:
