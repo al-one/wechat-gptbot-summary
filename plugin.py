@@ -8,6 +8,14 @@ from plugins import register, Plugin, Event, logger, Reply, ReplyType
 from bot.chatgpt import ChatGPTBot
 from channel.message import Message
 
+prompt_default = (
+    '这是一份聊天记录，请总结成一份不超过500字的中文概述。'
+    '总结正文里需要体现出这份聊天记录是从几点几分开始的。'
+    '如果消息数量过多，可以挑选重点或者最新的记录来总结。'
+    '遇到以下特征时可能是重点内容：'
+    '- 多人复述的聊天内容'
+    '- 多人回复 6/666/牛/牛逼 之前的内容'
+)
 
 @register
 class App(Plugin):
@@ -98,15 +106,10 @@ class App(Plugin):
         if count < minlen:
             return Reply(ReplyType.TEXT, '待总结的消息消息过少')
 
+        prompt = self.config.get('prompt', {})
+        if isinstance(prompt, dict):
+            prompt = prompt.get(sender, prompt.get('*', prompt_default))
         tim = f'{datetime.now()}'
-        prompt = self.config.get('prompt') or (
-            '这是一份聊天记录，请总结成一份不超过500字的中文概述。'
-            '总结正文里需要体现出这份聊天记录是从几点几分开始的。'
-            '如果消息数量过多，可以挑选重点或者最新的记录来总结。'
-            '遇到以下特征时可能是重点内容：'
-            '- 多人复述的聊天内容'
-            '- 多人回复 6/666/牛/牛逼 之前的内容'
-        )
         prompt = f'当前时间为: {tim}\n{prompt}'
         session = [{"role": "system", "content": prompt}]
 
