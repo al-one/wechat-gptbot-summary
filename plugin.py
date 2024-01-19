@@ -37,6 +37,13 @@ class App(Plugin):
             cmds = [cmds]
         return cmds
 
+    def config_for_sender(self, sender, key, default=None):
+        val = self.config.get(key, {})
+        if isinstance(val, dict):
+            dfl = val.get('*', default)
+            val = val.get(sender, dfl)
+        return val
+
     def store(self, data=None):
         dir = os.path.dirname(os.path.abspath(__file__))
         path = f'{dir}/records.json'
@@ -53,9 +60,7 @@ class App(Plugin):
             return {}
 
     def append_message(self, sender, msg):
-        maxlen = self.config.get('maxlen', {})
-        if isinstance(maxlen, dict):
-            maxlen = maxlen.get(sender, maxlen.get('*', 200))
+        maxlen = self.config_for_sender(sender, 'maxlen', 200)
         if maxlen <= 0:
             return
         if sender not in self.groups:
@@ -100,15 +105,11 @@ class App(Plugin):
     def reply(self, sender) -> Reply:
         lst = self.groups.get(sender) or []
         count = len(lst)
-        minlen = self.config.get('minlen', {})
-        if isinstance(minlen, dict):
-            minlen = minlen.get(sender, minlen.get('*', 3))
+        minlen = self.config_for_sender(sender, 'minlen', 3)
         if count < minlen:
             return Reply(ReplyType.TEXT, '待总结的消息消息过少')
 
-        prompt = self.config.get('prompt', {})
-        if isinstance(prompt, dict):
-            prompt = prompt.get(sender, prompt.get('*', prompt_default))
+        prompt = self.config_for_sender(sender, 'prompt', prompt_default)
         tim = f'{datetime.now()}'
         prompt = f'当前时间为: {tim}\n{prompt}'
         session = [{"role": "system", "content": prompt}]
