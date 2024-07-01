@@ -31,7 +31,8 @@
         "wx_userid": 100,     # 私聊
         "xxxx@chatroom": 200, # 群聊
         "*": 300
-      }
+      },
+      "dont_clear": false # 总结后不清除聊天记录，bool或dict
     }
   ]
 ```

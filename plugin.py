@@ -114,7 +114,10 @@ class App(Plugin):
         prompt = f'当前时间为: {tim}\n{prompt}'
         session = [{"role": "system", "content": prompt}]
 
-        lst = self.groups.pop(sender, None) or []
+        if self.config_for_sender(sender, 'dont_clear'):
+            lst = self.groups.get(sender, None) or []
+        else:
+            lst = self.groups.pop(sender, None) or []
         count = len(lst)
         logger.info('Summarize %s messages for %s.', count, sender)
 
