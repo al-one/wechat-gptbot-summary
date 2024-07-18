@@ -127,10 +127,13 @@ class App(Plugin):
 
         his = ['发言人,时间,内容']
         for msg in lst:
+            con = msg.get('content')
+            if not isinstance(con, str):
+                continue
             row = ','.join([
                 msg.get('sender', ''),
                 msg.get('time', ''),
-                msg.get('content', ''),
+                con,
             ])
             his.append(row)
         session.append({"role": "user", "content": '\n'.join(his)})
