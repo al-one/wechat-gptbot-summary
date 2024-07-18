@@ -145,7 +145,9 @@ class App(Plugin):
                 'time': tim,
                 'content': msg,
             })
-            logger.info('Summarized %s messages: %s.', count, result)
+            logger.info('Summarized %s messages: %s', count, result)
+        else:
+            logger.warning('Summarized failed: %s', result)
         if exc := result.get('exception'):
             if isinstance(exc, openai.error.APIError):
                 msg = exc.user_message or f'{exc}'
