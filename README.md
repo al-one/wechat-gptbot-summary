@@ -25,6 +25,7 @@
     {
       "name": "wechat_summary",
       "command": ["总结聊天记录", "聊天记录总结", "总结一下"],
+      "model": "gpt-3.5-turbo", # 可选
       "prompt": "这是一份聊天记录，请总结成一份不超过500字的中文概述。...", # 可选，string或dict
       "minlen": 5, # 最小聊天记录条数 int或dict，默认为3
       "maxlen": {  # 最大聊天记录条数 int或dict，默认为200

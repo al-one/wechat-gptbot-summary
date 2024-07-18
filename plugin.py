@@ -4,6 +4,7 @@ import json
 import openai
 import collections
 from datetime import datetime
+from config import conf
 from plugins import register, Plugin, Event, logger, Reply, ReplyType
 from bot.chatgpt import ChatGPTBot
 from channel.message import Message
@@ -137,6 +138,7 @@ class App(Plugin):
             ])
             his.append(row)
         session.append({"role": "user", "content": '\n'.join(his)})
+        self.bot.args['model'] = self.config_for_sender(sender, 'model') or conf().get('model')
         result = self.bot.reply_text(session)
         if msg := result.get('content'):
             self.append_message(sender, {
